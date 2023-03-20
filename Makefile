@@ -30,7 +30,7 @@ INC_FLAGS := $(addprefix -I,$(INC_DIRS))
 CPPFLAGS := $(INC_FLAGS) -MMD -MP
 
 # ALX specified C flags
-CFLAGS := -Wall -pedantic -Werror -Wextra -std=gnu89
+CFLAGS := -g -Wall -pedantic -Werror -Wextra -std=gnu89
 
 # Link SDL
 LDFLAGS := -lSDL2 -lSDL2_image -lSDL2_mixer -lSDL2_ttf -lSDL2_net

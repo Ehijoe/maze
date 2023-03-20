@@ -17,7 +17,6 @@ int check_wall_vertical(Map *map, float x, float y, float angle)
 {
 	unsigned int x_idx, y_idx;
 
-	SDL_Log("Vertical Checking\tx: %f\ty: %f", x, y);
 	y_idx = (unsigned int) floor(y);
 	if (angle < M_PI * 0.5 || angle > M_PI * 1.5)
 	{
@@ -29,8 +28,6 @@ int check_wall_vertical(Map *map, float x, float y, float angle)
 	}
 	if (map->w <= x_idx || map->h <= y_idx)
 		return (1);
-	SDL_Log("Vertical\tx_idx: %d\ty_idx: %d", x_idx, y_idx);
-	SDL_Log("Hit wall: %d", (map->cells[y_idx][x_idx] == CELL_WALL));
 	return (map->cells[y_idx][x_idx] == CELL_WALL);
 }
 
@@ -46,7 +43,6 @@ int check_wall_horizontal(Map *map, float x, float y, float angle)
 {
 	unsigned int x_idx, y_idx;
 
-	SDL_Log("Horizontal Checking\tx: %f\ty: %f", x, y);
 	x_idx = (unsigned int) floor(x);
 	if (angle > M_PI)
 	{
@@ -58,8 +54,6 @@ int check_wall_horizontal(Map *map, float x, float y, float angle)
 	}
 	if (map->w <= x_idx || map->h <= y_idx)
 		return (1);
-	SDL_Log("Horizontal Result\tx_idx: %d\ty_idx: %d", x_idx, y_idx);
-	SDL_Log("Hit wall: %d", (map->cells[y_idx][x_idx] == CELL_WALL));
 	return (map->cells[y_idx][x_idx] == CELL_WALL);
 }
 
@@ -102,7 +96,6 @@ void get_ray_distance(Map *map, Character *player,
 	float y_step = -1.0;
 
 	y_delta = tanf(angle);
-	SDL_Log("Angle: %f\ttan: %f", (angle * 180.0 / M_PI), y_delta);
 	x_delta = 1.0 / y_delta;
 	if (angle > M_PI)
 	{
@@ -132,6 +125,4 @@ void get_ray_distance(Map *map, Character *player,
 		y_pos += y_delta;
 	}
 	*y = calculate_distance(x_pos, y_pos, player);
-
-	SDL_Log("X distance: %f\tY distance: %f", *x, *y);
 }

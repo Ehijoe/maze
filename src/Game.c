@@ -91,11 +91,11 @@ void Game_draw(Game *game)
 	Character *player = game->player;
 	int col;
 
-	SDL_Log("Rendering Frame");
-	angle = player->direction - (FOV_ANGLE / 2.0);
+	SDL_Log("Player position\tx: %f\ty: %f", player->x, player->y);
+	angle = player->direction + (FOV_ANGLE / 2.0);
 	angle_step = FOV_ANGLE / ((double) DEFAULT_SCREEN_WIDTH);
 	SDL_SetRenderDrawColor(game->renderer, 0xAA, 0xAA, 0xAA, 0xFF);
-	for (col = 0; col <= 800; angle += angle_step, col++)
+	for (col = 0; col <= 800; angle -= angle_step, col++)
 	{
 	        Raycast_Render(game, angle, col);
 	}

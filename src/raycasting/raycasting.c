@@ -16,22 +16,23 @@
  */
 void Raycast_Render(Game *game, float angle, int col)
 {
-	float x, y, distance;
+	float x, y, distance, diff_angle;
 	Character *player;
 	Map *map;
 
+	player = game->player;
 	if (angle > 360.0)
 		angle -= 360.0;
 	if (angle < 0.0)
 		angle += 360.0;
+	diff_angle = angle - player->direction;
 	angle *= M_PI / 180.0;
-	player = game->player;
+	diff_angle *= M_PI / 180.0;
 	map = game->map;
 	get_ray_distance(map, player, &x, &y, angle);
 	distance = (x > y) ? y : x;
-	distance *= fabs(sin(angle - player->direction));
+	distance *= fabs(cos(diff_angle));
 	Raycast_DrawStrip(distance, col, game);
-	SDL_Log("Distance: %f", distance);
 }
 
 

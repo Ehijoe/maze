@@ -13,11 +13,11 @@ Map *Map_create(void)
 	if (map == NULL)
 		return (NULL);
 
-	map->w = 6;
-	map->h = 6;
+	map->w = 20;
+	map->h = 20;
 	map->cells = NULL;
 
-	map->cells = malloc(sizeof(Uint8 *) * map->h);
+	map->cells = malloc(sizeof(Cell *) * map->h);
 	if (map->cells == NULL)
 	{
 		free(map);
@@ -25,7 +25,7 @@ Map *Map_create(void)
 	}
 	for (i = 0; i < map->h; i++)
 	{
-		map->cells[i] = malloc(sizeof(Uint8) * map->w);
+		map->cells[i] = malloc(sizeof(Cell) * map->w);
 		if (map->cells[i] == NULL)
 		{
 			for (j = 0; j < i; j++)
