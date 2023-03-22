@@ -51,20 +51,20 @@ void event_handle_keyboard(SDL_Event *e, Game *game)
 	}
 	else if (e->key.keysym.sym == SDLK_a)
 	{
-		game->player->direction += 10.0;
+		game->player->direction += 5.0;
 	}
 	else if (e->key.keysym.sym == SDLK_d)
 	{
-		game->player->direction -= 10.0;
+		game->player->direction -= 5.0;
 	}
 	else if (e->key.keysym.sym == SDLK_w)
 	{
-		player->y += 0.1 * sin(player->direction * M_PI / 180.0);
+		player->y -= 0.1 * sin(player->direction * M_PI / 180.0);
 		player->x += 0.1 * cos(player->direction * M_PI / 180.0);
 	}
 	else if (e->key.keysym.sym == SDLK_s)
 	{
-		player->y -= 0.1 * sin(player->direction * M_PI / 180.0);
+		player->y += 0.1 * sin(player->direction * M_PI / 180.0);
 		player->x -= 0.1 * cos(player->direction * M_PI / 180.0);
 	}
 }

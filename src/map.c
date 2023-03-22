@@ -13,8 +13,8 @@ Map *Map_create(void)
 	if (map == NULL)
 		return (NULL);
 
-	map->w = 20;
-	map->h = 20;
+	map->w = 10;
+	map->h = 10;
 	map->cells = NULL;
 
 	map->cells = malloc(sizeof(Cell *) * map->h);

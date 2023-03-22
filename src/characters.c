@@ -16,9 +16,9 @@ Character *Character_create(void)
 		perror("Character_create");
 		exit(1);
 	}
-	player->x = 10.0;
-	player->y = 10.0;
-	player->direction = 0.0;
+	player->x = 5.0;
+	player->y = 5.0;
+	player->direction = 45.0;
 	SDL_Log("Created Player");
 
 	return (player);

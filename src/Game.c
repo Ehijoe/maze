@@ -90,8 +90,15 @@ void Game_draw(Game *game)
 	float angle, angle_step;
 	Character *player = game->player;
 	int col;
+	SDL_Rect sky = {0, 0, DEFAULT_SCREEN_WIDTH, DEFAULT_SCREEN_HEIGHT / 2};
 
-	SDL_Log("Player position\tx: %f\ty: %f", player->x, player->y);
+	SDL_SetRenderDrawColor(game->renderer, 0x80, 0x70, 0x41, 0xFF);
+	SDL_RenderClear(game->renderer);
+	SDL_SetRenderDrawColor(game->renderer, 0x87, 0xCE, 0xEB, 0xFF);
+	SDL_RenderFillRect(game->renderer, &sky);
+
+	SDL_Log("Position: (%f, %f)\tDirection: %f",
+		player->x, player->y, player->direction);
 	angle = player->direction + (FOV_ANGLE / 2.0);
 	angle_step = FOV_ANGLE / ((double) DEFAULT_SCREEN_WIDTH);
 	SDL_SetRenderDrawColor(game->renderer, 0xAA, 0xAA, 0xAA, 0xFF);

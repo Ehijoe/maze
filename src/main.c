@@ -74,10 +74,6 @@ int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
 				event_handle(&e, game);
 		}
 
-
-                SDL_SetRenderDrawColor(game->renderer, 0x10, 0x10, 0xAA, 0xFF);
-		SDL_RenderClear(game->renderer);
-
 		Game_draw(game);
 
 		SDL_RenderPresent(game->renderer);
