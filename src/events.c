@@ -67,4 +67,9 @@ void event_handle_keyboard(SDL_Event *e, Game *game)
 		player->y += 0.1 * sin(player->direction * M_PI / 180.0);
 		player->x -= 0.1 * cos(player->direction * M_PI / 180.0);
 	}
+
+	if (player->direction > 360.0)
+		player->direction -= 360.0;
+	else if (player->direction < 0.0)
+		player->direction += 360.0;
 }
