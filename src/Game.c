@@ -12,7 +12,7 @@
  *
  * Return: A pointer to the game
  */
-Game *Game_create(void)
+Game *Game_create(char *map_file)
 {
 	Game *game;
 
@@ -41,14 +41,15 @@ Game *Game_create(void)
 	}
 	game->renderer = SDL_CreateRenderer(game->window, -1,
 					    SDL_RENDERER_ACCELERATED);
-	if (game->renderer == NULL)
+
+	game->map = Map_create(map_file);
+	game->player = Character_create();
+	if (game->renderer == NULL || game->map == NULL || game->player == NULL)
 	{
 		SDL_Log("Could not create renderer: %s", SDL_GetError());
 		Game_close(game);
 		exit(1);
 	}
-	game->map = Map_create();
-	game->player = Character_create();
 	SDL_SetRenderDrawBlendMode(game->renderer, SDL_BLENDMODE_BLEND);
 	return (game);
 }

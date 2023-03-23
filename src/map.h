@@ -16,7 +16,9 @@ typedef struct Map
 	Cell **cells;
 } Map;
 
-Map *Map_create(void);
+Map *Map_create(char *map_filename);
+void Map_setSize(char *buffer, unsigned int buf_size, Map *map);
+void Map_initialize(char *buffer, Map *map);
 void Map_free(Map *map);
 
 #endif
