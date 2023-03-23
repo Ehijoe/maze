@@ -90,13 +90,13 @@ void get_ray_distance(Map *map, Character *player,
 		      float *x, float *y, float angle)
 {
 	/* y_delta is the slope and x_delta is its inverse */
-	float x_delta, y_delta, slope;
+	float x_delta, y_delta;
 	float x_pos, y_pos;
 	float x_step = -1.0;
 	float y_step = -1.0;
 	int check;
 
-	slope = y_delta = tanf(angle);
+	y_delta = tanf(angle);
 	x_delta = 1.0 / y_delta;
 	if (angle > M_PI)
 	{
@@ -110,7 +110,7 @@ void get_ray_distance(Map *map, Character *player,
 	}
 
 	y_pos = (y_delta < 0) ? floor(player->y) : ceil(player->y);
-	x_pos = player->x + ((y_pos - player->y) / slope);
+	x_pos = player->x + ((y_pos - player->y) * x_step / y_delta);
 	while ((check = check_wall_horizontal(map, x_pos, y_pos, angle)))
 	{
 		if (check == -1)
@@ -121,7 +121,7 @@ void get_ray_distance(Map *map, Character *player,
 	*x = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
 
 	x_pos = (x_delta < 0) ? floor(player->x) : ceil(player->x);
-	y_pos = player->y + (slope * (x_pos - player->x));
+	y_pos = player->y + ((y_delta / x_step) * (x_pos - player->x));
 	while ((check = check_wall_vertical(map, x_pos, y_pos, angle)))
 	{
 		if (check == -1)
@@ -145,13 +145,13 @@ void trace_ray_distance(Map *map, Character *player,
 		      float *x, float *y, float angle)
 {
 	/* y_delta is the slope and x_delta is its inverse */
-	float x_delta, y_delta, slope;
+	float x_delta, y_delta;
 	float x_pos, y_pos;
 	float x_step = -1.0;
 	float y_step = -1.0;
 	int check;
 
-	slope = y_delta = tanf(angle);
+	y_delta = tanf(angle);
 	x_delta = 1.0 / y_delta;
 	if (angle > M_PI)
 	{
@@ -166,7 +166,7 @@ void trace_ray_distance(Map *map, Character *player,
 	SDL_Log("X delta: %f\tY delta: %f", x_delta, y_delta);
 
 	y_pos = (y_step < 0) ? floor(player->y) : ceil(player->y);
-	x_pos = player->x + ((y_pos - player->y) / slope);
+	x_pos = player->x + ((y_pos - player->y) * x_step / y_delta);
 	while ((check = check_wall_horizontal(map, x_pos, y_pos, angle)))
 	{
 		if (check == -1)
@@ -178,7 +178,7 @@ void trace_ray_distance(Map *map, Character *player,
 	*x = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
 
         x_pos = (x_step < 0) ? floor(player->x) : ceil(player->x);
-	y_pos = player->y + (slope * (x_pos - player->x));
+	y_pos = player->y + ((y_delta / x_step) * (x_pos - player->x));
 	while ((check = check_wall_vertical(map, x_pos, y_pos, angle)))
 	{
 		if (check == -1)
