@@ -27,8 +27,8 @@ int check_wall_vertical(Map *map, float x, float y, float angle)
 		x_idx = (unsigned int) round(x - 1.0);
 	}
 	if (map->w <= x_idx || map->h <= y_idx)
-		return (1);
-	return (map->cells[y_idx][x_idx] == CELL_WALL);
+		return (-1);
+	return (map->cells[y_idx][x_idx] != CELL_WALL);
 }
 
 
@@ -53,8 +53,8 @@ int check_wall_horizontal(Map *map, float x, float y, float angle)
 		y_idx = (unsigned int) round(y - 1.0);
 	}
 	if (map->w <= x_idx || map->h <= y_idx)
-		return (1);
-	return (map->cells[y_idx][x_idx] == CELL_WALL);
+		return (-1);
+	return (map->cells[y_idx][x_idx] != CELL_WALL);
 }
 
 
@@ -90,12 +90,13 @@ void get_ray_distance(Map *map, Character *player,
 		      float *x, float *y, float angle)
 {
 	/* y_delta is the slope and x_delta is its inverse */
-	float x_delta, y_delta;
+	float x_delta, y_delta, slope;
 	float x_pos, y_pos;
 	float x_step = -1.0;
 	float y_step = -1.0;
+	int check;
 
-	y_delta = tanf(angle);
+	slope = y_delta = tanf(angle);
 	x_delta = 1.0 / y_delta;
 	if (angle > M_PI)
 	{
@@ -108,21 +109,83 @@ void get_ray_distance(Map *map, Character *player,
 		x_step = 1.0;
 	}
 
-	y_pos = floor(player->y);
-	x_pos = player->x + (x_delta * (y_pos - player->y));
-	while (!check_wall_horizontal(map, x_pos, y_pos, angle))
+	y_pos = (y_delta < 0) ? floor(player->y) : ceil(player->y);
+	x_pos = player->x + ((y_pos - player->y) / slope);
+	while ((check = check_wall_horizontal(map, x_pos, y_pos, angle)))
 	{
+		if (check == -1)
+			break;
 		x_pos += x_delta;
 		y_pos += y_step;
 	}
-	*x = calculate_distance(x_pos, y_pos, player);
+	*x = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
 
-	x_pos = floor(player->x);
-	y_pos = player->y + (y_delta * (x_pos - player->x));
-	while (!check_wall_vertical(map, x_pos, y_pos, angle))
+	x_pos = (x_delta < 0) ? floor(player->x) : ceil(player->x);
+	y_pos = player->y + (slope * (x_pos - player->x));
+	while ((check = check_wall_vertical(map, x_pos, y_pos, angle)))
 	{
+		if (check == -1)
+			break;
 		x_pos += x_step;
 		y_pos += y_delta;
 	}
-	*y = calculate_distance(x_pos, y_pos, player);
+	*y = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
+}
+
+
+/**
+ * trace_ray_distance - Debug version of get_ray_distance
+ * @map: Map
+ * @player: The observer
+ * @x: Pointer to store the x position
+ * @y: Pointer to store the y position
+ * @angle: Direction of the ray
+ */
+void trace_ray_distance(Map *map, Character *player,
+		      float *x, float *y, float angle)
+{
+	/* y_delta is the slope and x_delta is its inverse */
+	float x_delta, y_delta, slope;
+	float x_pos, y_pos;
+	float x_step = -1.0;
+	float y_step = -1.0;
+	int check;
+
+	slope = y_delta = tanf(angle);
+	x_delta = 1.0 / y_delta;
+	if (angle > M_PI)
+	{
+		x_delta *= -1.0;
+		y_step = 1.0;
+	}
+	if (angle < (M_PI * 0.5) || angle > (M_PI * 1.5))
+	{
+		y_delta *= -1.0;
+		x_step = 1.0;
+	}
+	SDL_Log("X delta: %f\tY delta: %f", x_delta, y_delta);
+
+	y_pos = (y_step < 0) ? floor(player->y) : ceil(player->y);
+	x_pos = player->x + ((y_pos - player->y) / slope);
+	while ((check = check_wall_horizontal(map, x_pos, y_pos, angle)))
+	{
+		if (check == -1)
+			break;
+		x_pos += x_delta;
+		y_pos += y_step;
+	}
+	SDL_Log("Horizontal hit: (%f, %f)", x_pos, y_pos);
+	*x = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
+
+        x_pos = (x_step < 0) ? floor(player->x) : ceil(player->x);
+	y_pos = player->y + (slope * (x_pos - player->x));
+	while ((check = check_wall_vertical(map, x_pos, y_pos, angle)))
+	{
+		if (check == -1)
+			break;
+		x_pos += x_step;
+		y_pos += y_delta;
+	}
+	SDL_Log("Vertical hit: (%f, %f)", x_pos, y_pos);
+	*y = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
 }
