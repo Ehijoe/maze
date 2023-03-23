@@ -26,7 +26,7 @@ typedef struct Game
 	Map *map;
 } Game;
 
-Game *Game_create(void);
+Game *Game_create(char *map_file);
 void Game_change_music(Game *game, char *music_file);
 void Game_draw(Game *game);
 void Game_close(Game *game);

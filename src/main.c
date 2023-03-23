@@ -47,15 +47,24 @@ void init_libraries(void)
  *
  * Return: Exit status
  */
-int main(__attribute__((unused)) int argc, __attribute__((unused)) char **argv)
+int main(int argc, char **argv)
 {
 	Game *game = NULL;
 	SDL_Event e;
 	bool quit = false;
+	char *map;
 
+	if (argc < 2)
+	{
+		map = "assets/maps/default.map";
+	}
+	else
+	{
+		map = argv[1];
+	}
 	init_libraries();
 	SDL_Log("Initialized Libraries");
-	game = Game_create();
+	game = Game_create(map);
 	SDL_Log("Created Game");
 
 	Game_change_music(game, "assets/music/medieval.mp3");
