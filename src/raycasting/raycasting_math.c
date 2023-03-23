@@ -27,8 +27,8 @@ int check_wall_vertical(Map *map, float x, float y, float angle)
 		x_idx = (unsigned int) round(x - 1.0);
 	}
 	if (map->w <= x_idx || map->h <= y_idx)
-		return (1);
-	return (map->cells[y_idx][x_idx] == CELL_WALL);
+		return (-1);
+	return (map->cells[y_idx][x_idx] != CELL_WALL);
 }
 
 
@@ -53,8 +53,8 @@ int check_wall_horizontal(Map *map, float x, float y, float angle)
 		y_idx = (unsigned int) round(y - 1.0);
 	}
 	if (map->w <= x_idx || map->h <= y_idx)
-		return (1);
-	return (map->cells[y_idx][x_idx] == CELL_WALL);
+		return (-1);
+	return (map->cells[y_idx][x_idx] != CELL_WALL);
 }
 
 
@@ -94,6 +94,7 @@ void get_ray_distance(Map *map, Character *player,
 	float x_pos, y_pos;
 	float x_step = -1.0;
 	float y_step = -1.0;
+	int check;
 
 	y_delta = tanf(angle);
 	x_delta = 1.0 / y_delta;
@@ -108,21 +109,25 @@ void get_ray_distance(Map *map, Character *player,
 		x_step = 1.0;
 	}
 
-	y_pos = floor(player->y);
-	x_pos = player->x + (x_delta * (y_pos - player->y));
-	while (!check_wall_horizontal(map, x_pos, y_pos, angle))
+	y_pos = (y_delta < 0) ? floor(player->y) : ceil(player->y);
+	x_pos = player->x + ((y_pos - player->y) * x_step / y_delta);
+	while ((check = check_wall_horizontal(map, x_pos, y_pos, angle)))
 	{
+		if (check == -1)
+			break;
 		x_pos += x_delta;
 		y_pos += y_step;
 	}
-	*x = calculate_distance(x_pos, y_pos, player);
+	*x = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
 
-	x_pos = floor(player->x);
-	y_pos = player->y + (y_delta * (x_pos - player->x));
-	while (!check_wall_vertical(map, x_pos, y_pos, angle))
+	x_pos = (x_delta < 0) ? floor(player->x) : ceil(player->x);
+	y_pos = player->y + ((y_delta / x_step) * (x_pos - player->x));
+	while ((check = check_wall_vertical(map, x_pos, y_pos, angle)))
 	{
+		if (check == -1)
+			break;
 		x_pos += x_step;
 		y_pos += y_delta;
 	}
-	*y = calculate_distance(x_pos, y_pos, player);
+	*y = (check == -1) ? R_INF : calculate_distance(x_pos, y_pos, player);
 }
